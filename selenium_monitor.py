@@ -37,15 +37,10 @@ password_input.send_keys(password)
 password_input.send_keys(Keys.RETURN)
 time.sleep(5)
 
-# Step 4: Open each protected URL in a new tab and store the initial content
-urls = [
-    "https://lms.erp.bits-pilani.ac.in/moodle/mod/forum/view.php?id=2107",
-    "https://lms.erp.bits-pilani.ac.in/moodle/course/view.php?id=1554",
-    "https://lms.erp.bits-pilani.ac.in/moodle/course/view.php?id=1594",
-    "https://lms.erp.bits-pilani.ac.in/moodle/mod/forum/view.php?id=2187",
-    "https://lms.erp.bits-pilani.ac.in/moodle/course/view.php?id=1697",
-    "https://lms.erp.bits-pilani.ac.in/moodle/mod/forum/view.php?id=2393"
-]
+driver.get("https://lms.erp.bits-pilani.ac.in/moodle/")
+time.sleep(5)
+course_links = driver.find_elements(By.CSS_SELECTOR, "div.coursebox .coursename a")
+urls = [link.get_attribute('href') for link in course_links]
 
 # Dictionary to hold initial page contents for each tab
 tabs_content = {}
@@ -63,8 +58,9 @@ def notify_change(url):
 # Step 5: Periodically refresh each tab and check for changes
 try:
     while True:
-        for url in urls:
-            driver.switch_to.window(driver.window_handles[urls.index(url)])
+        for idx, url in enumerate(urls):
+            # Switch to the tab corresponding to the current URL
+            driver.switch_to.window(driver.window_handles[idx + 1])  # +1 because the first tab is the main page
             driver.refresh()
             time.sleep(2)  # Wait for the page to load
 
