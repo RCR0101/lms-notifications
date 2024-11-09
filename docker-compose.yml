@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    command: uvicorn selenium_monitor:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build: .
+    command: streamlit run frontend.py --server.port=8501 --server.enableCORS=false
+    ports:
+      - "8501:8501"
+    depends_on:
+      - backend
